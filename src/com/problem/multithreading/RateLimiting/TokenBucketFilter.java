@@ -18,12 +18,11 @@ public class TokenBucketFilter {
                     tokenCount = maxSize;
                 }
                 this.notifyAll();
-                try {
-                    Thread.currentThread().sleep(time);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
+            }
+            try {
+                Thread.currentThread().sleep(time);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
