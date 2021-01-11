@@ -39,7 +39,5 @@ public class TokenBucketFilter {
             System.out.println("request process at " + (System.currentTimeMillis()/1000));
         }
 
-
-
     }
 }
