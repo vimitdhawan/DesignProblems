@@ -8,7 +8,7 @@ public class App {
         Thread t1 = new Thread(() -> {
             for(int i =0; i<5; i++){
                 try {
-                    dp.philosopher1();
+                    dp.philosopherEating(1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -17,7 +17,7 @@ public class App {
         Thread t2 = new Thread(() -> {
             for(int i =0; i<5; i++){
                 try {
-                    dp.philosopher2();
+                    dp.philosopherEating(2);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -26,7 +26,7 @@ public class App {
         Thread t3 = new Thread(() -> {
             for(int i =0; i<5; i++){
                 try {
-                    dp.philosopher3();
+                    dp.philosopherEating(3);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -34,7 +34,7 @@ public class App {
         });    Thread t4 = new Thread(() -> {
             for(int i =0; i<5; i++){
                 try {
-                    dp.philosopher4();
+                    dp.philosopherEating(4);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -43,7 +43,7 @@ public class App {
         Thread t5 = new Thread(() -> {
             for(int i =0; i<5; i++){
                 try {
-                    dp.philosopher5();
+                    dp.philosopherEating(0);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -66,62 +66,33 @@ public class App {
 }
 
 class DiningPhilosopherProblem {
-    Semaphore spoon = new Semaphore(5);
+    Semaphore[] spoon = new Semaphore[5];
     Semaphore philosopher = new Semaphore(4);
 
-    public void philosopher1() throws InterruptedException {
-        philosopher.acquire();
-        spoonAcquire();
-        System.out.println("philosopher1 start chunk");
-        Thread.sleep(2000);
-        System.out.println("philosopher1 finished chunk");
-        spoonRelease();
-        philosopher.release();
+    DiningPhilosopherProblem() {
+        spoon[0] = new Semaphore(1);
+        spoon[1] = new Semaphore(1);
+        spoon[2] = new Semaphore(1);
+        spoon[3] = new Semaphore(1);
+        spoon[4] = new Semaphore(1);
     }
-    public void philosopher2() throws InterruptedException {
+    public void philosopherEating(int id) throws InterruptedException {
         philosopher.acquire();
-        spoonAcquire();
-        System.out.println("philosopher2 start chunk");
+        spoonAcquire(id);
+        System.out.println("philosopher start chunk " + id);
         Thread.sleep(2000);
-        System.out.println("philosopher2 finished chunk");
-        spoonRelease();
-        philosopher.release();
-    }
-    public void philosopher3() throws InterruptedException {
-        philosopher.acquire();
-        spoonAcquire();
-        System.out.println("philosopher3 start chunk");
-        Thread.sleep(2000);
-        System.out.println("philosopher3 finished chunk");
-        spoonRelease();
-        philosopher.release();
-    }
-    public void philosopher4() throws InterruptedException {
-        philosopher.acquire();
-        spoonAcquire();
-        System.out.println("philosopher4 start chunk");
-        Thread.sleep(2000);
-        System.out.println("philosopher4 finished chunk");
-        spoonRelease();
-        philosopher.release();
-    }
-    public void philosopher5() throws InterruptedException {
-        philosopher.acquire();
-        spoonAcquire();
-        System.out.println("philosopher5 start chunk");
-        Thread.sleep(2000);
-        System.out.println("philosopher5 finished chunk");
-        spoonRelease();
+        System.out.println("philosopher1 finished chunk " +id);
+        spoonRelease(id);
         philosopher.release();
     }
 
-    public void spoonAcquire() throws InterruptedException {
-        spoon.acquire();
-        spoon.acquire();
+    public void spoonAcquire(int id) throws InterruptedException {
+        spoon[id].acquire();
+        spoon[(id+1)%5].acquire();
     }
-    public void spoonRelease() throws InterruptedException {
-        spoon.release();
-        spoon.release();
+    public void spoonRelease(int id) throws InterruptedException {
+        spoon[id].release();
+        spoon[(id+1)%5].release();
     }
 
 }
