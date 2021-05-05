@@ -2,16 +2,16 @@ package com.problem.multithreading.async.sync;
 
 public class App {
     public static void main(String[] args) {
-    /*    AsyncExecutor executor = new AsyncExecutor();
+        AsyncExecutor executor = new AsyncExecutor();
         executor.asyncExecution(() -> {
             System.out.println("Async Callback Done");
         });
-        System.out.println("Async Main Thread Finish");*/
-        SynchronusExecutor synchronusExecutor = new SynchronusExecutor();
+        System.out.println("Async Main Thread Finish");
+       /* SynchronusExecutor synchronusExecutor = new SynchronusExecutor();
         synchronusExecutor.asyncExecution(() -> {
             System.out.println("Sync Callback Done");
         });
-        System.out.println("Sync Main Thread Finish");
+        System.out.println("Sync Main Thread Finish");*/
     }
 }
 
