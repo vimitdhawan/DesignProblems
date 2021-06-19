@@ -1,42 +1,45 @@
 package com.problem.hashmap;
 
+import jdk.nashorn.internal.codegen.OptimisticTypesPersistence;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class HashMap<K, V> implements Map<K, V> {
     int capacity;
-    private List<ListNode<K, V>> list;
+    private List<Optional<ListNode<K, V>>> list;
 
     public HashMap(int capacity){
         this.capacity = capacity;
         list = new ArrayList<>(capacity);
         for(int i =0; i< capacity; i++){
-            list.add(null);
+            list.add(Optional.empty());
         }
     }
 
     @Override
-    public V get(K key) {
-        ListNode<K, V> node = getNode(key);
-        if(node!=null) {
-            return node.value;
+    public Optional<V> get(K key) {
+        Optional<ListNode<K, V>> node = getNode(key);
+        if(node.isPresent()) {
+            return Optional.of(node.get().value);
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
     public void put(K key, V value) {
-        ListNode<K, V> existingNode = getNode(key);
-        if(existingNode!=null){
-            existingNode.value = value;
+        Optional<ListNode<K, V>> existingNode = getNode(key);
+        if(existingNode.isPresent()){
+            existingNode.get().value = value;
             return;
         }
         int index = getIndex(key);
-        ListNode<K, V> node = list.get(index);
-        ListNode<K, V> tempNode = new ListNode<>(key, value);
-        if(node != null){
-            tempNode.next = node;
-            node.previous = tempNode;
+        Optional<ListNode<K, V>> node = list.get(index);
+        Optional<ListNode<K, V>> tempNode = Optional.of(new ListNode<>(key, value));
+        if(node.isPresent()){
+            tempNode.get().next = node;
+            node.get().previous = tempNode;
         }
         list.add(index, tempNode);
 
@@ -44,29 +47,29 @@ public class HashMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean delete(K key) {
-        ListNode<K, V> node = getNode(key);
-        if(node == null) return false;
+        Optional<ListNode<K, V>> node = getNode(key);
+        if(!node.isPresent()) return false;
         else{
-            ListNode<K, V> prevNode = node.previous;
-            ListNode<K, V> nextNode = node.next;
-            if(prevNode!=null && nextNode!=null){
-                prevNode.next = nextNode;
-                nextNode.previous = prevNode;
-            } else if(prevNode==null){
+            Optional<ListNode<K, V>> prevNode = node.get().previous;
+            Optional<ListNode<K, V>> nextNode = node.get().next;
+            if(prevNode.isPresent() && nextNode.isPresent()){
+                prevNode.get().next = nextNode;
+                nextNode.get().previous = prevNode;
+            } else if(!prevNode.isPresent()){
                 int index = getIndex(key);
                 list.add(index,nextNode);
             } else{
-                prevNode.next = null;
+                prevNode.get().next = Optional.empty();
             }
         }
         return true;
     }
 
-    private ListNode<K, V> getNode(K key){
+    private Optional<ListNode<K, V>> getNode(K key){
         int index = getIndex(key);
-        ListNode<K, V> node = list.get(index);
-        while(node!=null && !node.key.equals(key)){
-            node = node.next;
+        Optional<ListNode<K, V>> node = list.get(index);
+        while(node.isPresent() && !node.get().key.equals(key)){
+            node = node.get().next;
         }
         return node;
     }
@@ -78,12 +81,14 @@ public class HashMap<K, V> implements Map<K, V> {
 }
 
 class ListNode<K, V>{
-    ListNode<K, V> next;
-    ListNode<K, V> previous;
+    Optional<ListNode<K, V>> next;
+    Optional<ListNode<K, V>> previous;
     K key;
     V value;
     ListNode(K key, V value){
         this.key = key;
         this.value = value;
+        this.next = Optional.empty();
+        this.previous = Optional.empty();
     }
 }
