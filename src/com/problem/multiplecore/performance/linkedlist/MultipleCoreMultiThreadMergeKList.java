@@ -1,4 +1,4 @@
-package com.problem.multiplecore.performance;
+package com.problem.multiplecore.performance.linkedlist;
 
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;

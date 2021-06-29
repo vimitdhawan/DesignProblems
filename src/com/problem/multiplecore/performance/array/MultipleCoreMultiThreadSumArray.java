@@ -3,43 +3,44 @@ package com.problem.multiplecore.performance.array;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
-public class MultipleCoreMultiThreadMergeKList {
+public class MultipleCoreMultiThreadSumArray {
     private int SEQUENTIAL_THRESHOLD;
-    int[] arr;
+    int[] array;
 
-    MultipleCoreMultiThreadMergeKList(ListNode[] lists, int SEQUENTIAL_THRESHOLD){
-        this.lists = lists;
+    MultipleCoreMultiThreadSumArray(int[] array, int SEQUENTIAL_THRESHOLD){
+        this.array = array;
         this.SEQUENTIAL_THRESHOLD = SEQUENTIAL_THRESHOLD;
     }
 
-    public ListNode mergeKLists(ListNode[] lists){
-        if(lists.length == 0) return null;
+    public int sumArray(int[] input){
+        if(input.length == 0) return 0;
 
-        MultiCoreMergeKList mc = new MultiCoreMergeKList( 0, lists.length-1);
+        SingleTask mc = new SingleTask( 0, input.length-1);
         int  processor = Runtime.getRuntime().availableProcessors();
         ForkJoinPool pool = new ForkJoinPool(processor);
         return pool.invoke(mc);
 
     }
 
-    private class MultiCoreMergeKList extends RecursiveTask<ListNode> {
+    private class SingleTask extends RecursiveTask<Integer> {
         int start;
         int end;
-        MultiCoreMergeKList(int start, int end){
+
+        SingleTask( int start, int end){
             this.end = end;
             this.start = start;
         }
         @Override
-        protected ListNode compute() {
+        protected Integer compute() {
             if(this.end - this.start <= SEQUENTIAL_THRESHOLD){
-                return ArrayUtil.divideAndMerge(lists, this.start, this.end);
+                return ArrayUtil.sumArray(array, this.start, this.end);
             } else {
                 int middle = (this.start + this.end)/2;
-                MultiCoreMergeKList firstTask = new MultiCoreMergeKList(start, middle);
-                MultiCoreMergeKList secondTask = new MultiCoreMergeKList(middle+1, end);
+                SingleTask firstTask = new SingleTask(start, middle);
+                SingleTask secondTask = new SingleTask(middle+1, end);
                 firstTask.fork();
-                ListNode secondTaskListNode = secondTask.compute();
-                return ArrayUtil.mergeTwoLists(secondTaskListNode,firstTask.join());
+                int sum = secondTask.compute();
+                return sum + firstTask.join();
             }
         }
     }

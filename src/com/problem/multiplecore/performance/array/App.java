@@ -1,33 +1,35 @@
-package com.problem.multiplecore.performance.linkedlist;
+package com.problem.multiplecore.performance.array;
 
 import java.util.concurrent.ExecutionException;
 
 public class App {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        ListNode[] list = ListUtil.createLists(100000000, 1);
-        SingleThreadMergeKList st = new SingleThreadMergeKList();
-        long startTime = System.currentTimeMillis();
-        ListNode res = st.mergeKLists(list);
-        long finishTime = System.currentTimeMillis();
-        System.out.println("Single thread merge k lists in " + (finishTime - startTime) + " milli seconds") ;
+        int noOfElement = 200000000;
+        int noOfThread = 10;
+        int SEQUENTIAL_THRESHOLD = 10000000;
+        int[] array = ArrayUtil.createArray(noOfElement);
 
-        MultipleThreadMergeKList mt = new MultipleThreadMergeKList();
-        ListNode[] mtList = ListUtil.createLists(100000000, 1);
+
+        SingleThreadSumArray st = new SingleThreadSumArray();
+        long startTime = System.currentTimeMillis();
+        int res = st.sumArray(array);
+        long finishTime = System.currentTimeMillis();
+        System.out.println("Single thread added " + noOfElement + " 1 in " + (finishTime - startTime) + " milli seconds " + res);
+
+        MultipleThreadSumArray mt = new MultipleThreadSumArray();
         System.out.println("-----------------------------------------------------");
         long mThreadStartTime =  System.currentTimeMillis();
-        mt.mergeKLists(mtList);
+        int mRes = mt.sumArray(array, noOfThread);
         long mThreadFinishTime = System.currentTimeMillis();
-        System.out.println("Multiple thread merge k lists in " + (mThreadFinishTime - mThreadStartTime) + " milli seconds");
+        System.out.println(noOfThread + " thread added " + noOfElement + " 1 in " + (mThreadFinishTime - mThreadStartTime) + " milli seconds with res " + mRes);
 
         System.out.println("-----------------------------------------------------");
 
-        ListNode[] mcList = ListUtil.createLists(100000000, 1);
-        int SEQUENTIAL_THRESHOLD = 1000;
-        MultipleCoreMultiThreadMergeKList mc = new MultipleCoreMultiThreadMergeKList(mcList, SEQUENTIAL_THRESHOLD);
+        MultipleCoreMultiThreadSumArray mc = new MultipleCoreMultiThreadSumArray(array, SEQUENTIAL_THRESHOLD);
         long mcThreadStartTime =  System.currentTimeMillis();
-        mc.mergeKLists(mcList);
+        int mcRes = mc.sumArray(array);
         long mcThreadFinishTime = System.currentTimeMillis();
-        System.out.println("Multi core thread thread merge k lists in " + (mcThreadFinishTime - mcThreadStartTime) + " milli seconds") ;
+        System.out.println( "Multicore added " + noOfElement + " 1 in with sequential threshold " + SEQUENTIAL_THRESHOLD+ " in time " + (mcThreadFinishTime - mcThreadStartTime) + " milli seconds with res " + mcRes);
 
     }
 }

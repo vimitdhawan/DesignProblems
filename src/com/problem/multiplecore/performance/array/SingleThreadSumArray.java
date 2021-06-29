@@ -1,10 +1,10 @@
 package com.problem.multiplecore.performance.array;
 
-public class SingleThreadMergeKList {
+public class SingleThreadSumArray {
 
-    public ListNode mergeKLists(ListNode[] lists){
-        if(lists.length == 0) return null;
-        return ArrayUtil.divideAndMerge(lists, 0, lists.length-1);
+    public int sumArray(int[] input){
+        if(input.length == 0) return 0;
+        return ArrayUtil.sumArray(input, 0, input.length-1);
 
     }
 

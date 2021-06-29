@@ -1,6 +1,5 @@
-package com.problem.multiplecore.performance;
+package com.problem.multiplecore.performance.linkedlist;
 
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 public class App {

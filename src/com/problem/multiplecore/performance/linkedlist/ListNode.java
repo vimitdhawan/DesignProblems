@@ -1,4 +1,4 @@
-package com.problem.multiplecore.performance;
+package com.problem.multiplecore.performance.linkedlist;
 
 public class ListNode {
     int val;

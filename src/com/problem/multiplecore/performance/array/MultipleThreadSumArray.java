@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
-public class MultipleThreadMergeKList {
+public class MultipleThreadSumArray {
 
     public int sumArray(int[] input, int noOfThreads) throws InterruptedException {
         if(input.length == 0) return 0;
